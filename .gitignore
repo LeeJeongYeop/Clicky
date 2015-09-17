@@ -1,2 +1,5 @@
 .idea/
 node_modules/
+my_conf.js
+models/db_config.js
+models/db_crypto.js
