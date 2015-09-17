@@ -19,6 +19,6 @@
 | Login |	POST	| /user/login | incomplete |   |
 | Btn Reg |	POST	| /btn/reg | incomplete |   |
 | Btn Function Reg |	POST	| /btn/funcReg | incomplete |   |
-| Btn Function Edit |	POST	| /btn/funcEdit | incomplete |   |
-| Btn Function Delete |	POST	| /btn/funcDel | incomplete |   |
-| Btn Delete |	POST	| /btn/del | incomplete |   |
+| Btn Function Edit |	PUT	| /btn/funcEdit | incomplete |   |
+| Btn Function Delete |	DELETE	| /btn/funcDel | incomplete |   |
+| Btn Delete |	DELETE	| /btn/del | incomplete |   |
