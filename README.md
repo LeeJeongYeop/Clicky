@@ -8,7 +8,7 @@
 - Language : Javascript
 - Framework : [Node.js](https://nodejs.org/), [Express](http://expressjs.com/)
 - Test Server : [DigitalOcean](https://www.digitalocean.com/), [Nginx](http://nginx.org/)
-- Database : MongoDB(NoSQL ODM - Mongoose)
+- Database : MongoDB(NoSQL ODM - [Mongoose](http://mongoosejs.com/))
 
 ## REST API 
 > REST API Definition
@@ -17,8 +17,8 @@
 | :------------ |	:-------:	| :-----------------| :--------: | :----: |
 | Join |	POST	| /user/join | complete | 15-09-17  |
 | Login |	POST	| /user/login | incomplete |   |
-| Btn Reg |	POST	| /user/reg | incomplete |   |
-| Btn Function Reg |	POST	| /user/funcReg | incomplete |   |
-| Btn Function Edit |	POST	| /user/funcEdit | incomplete |   |
-| Btn Function Delete |	POST	| /user/funcDel | incomplete |   |
-| Btn Delete |	POST	| /user/del | incomplete |   |
+| Btn Reg |	POST	| /btn/reg | incomplete |   |
+| Btn Function Reg |	POST	| /btn/funcReg | incomplete |   |
+| Btn Function Edit |	POST	| /btn/funcEdit | incomplete |   |
+| Btn Function Delete |	POST	| /btn/funcDel | incomplete |   |
+| Btn Delete |	POST	| /btn/del | incomplete |   |
