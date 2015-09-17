@@ -57,3 +57,6 @@ exports.join = function(req, res){
 /*******************
  *  User Login
  ********************/
+exports.login = function(req, res){
+
+};
