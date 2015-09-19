@@ -22,4 +22,12 @@ UserSchema.pre('save', function(callback){
     callback();
 });
 
+UserSchema.statics.login = function(id, callback){
+    var self = this;
+    self.find({id: id}, function(err, user){
+        if(err) callback(err);
+        else callback(null, user);
+    });
+};
+
 module.exports = db.model('User', UserSchema);

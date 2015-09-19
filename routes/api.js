@@ -7,4 +7,6 @@ exports.initApp = function(app){
     // USER
     app.route('/user/join')
         .post(userCtrl.join);
+    app.route('/user/login')
+        .post(userCtrl.login);
 };

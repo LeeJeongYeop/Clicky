@@ -16,9 +16,9 @@
 | Feature |	Method	| Request URL | Todo Status | Date (yymmdd) |
 | :------------ |	:-------:	| :-----------------| :--------: | :----: |
 | Join |	POST	| /user/join | complete | 15-09-17  |
-| Login |	POST	| /user/login | incomplete |   |
+| Login |	POST	| /user/login | complete | 15-09-19  |
 | Btn Reg |	POST	| /btn/reg | incomplete |   |
-| Btn Function Reg |	POST	| /btn/funcReg | incomplete |   |
-| Btn Function Edit |	PUT	| /btn/funcEdit | incomplete |   |
-| Btn Function Delete |	DELETE	| /btn/funcDel | incomplete |   |
+| Btn Function Reg |	POST	| /btn/func | incomplete |   |
+| Btn Function Edit |	PUT	| /btn/func | incomplete |   |
+| Btn Function Delete |	DELETE	| /btn/func | incomplete |   |
 | Btn Delete |	DELETE	| /btn/del | incomplete |   |
