@@ -3,6 +3,7 @@
  */
 var db = require('./db_config');
 var db_crypto = require('./db_crypto');
+var logger = require('../logger');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
@@ -24,7 +25,7 @@ UserSchema.pre('save', function(callback){
 
 UserSchema.statics.login = function(id, callback){
     var self = this;
-    self.find({id: id}, function(err, user){
+    self.findOne({id: id}, function(err, user){
         if(err) callback(err);
         else callback(null, user);
     });

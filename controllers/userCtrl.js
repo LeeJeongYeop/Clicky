@@ -1,14 +1,15 @@
 /**
  * Created by kingw on 2015-09-17.
  */
-var async = require('async');
 var db_user = require('../models/userModel');
 var db_crypto = require('../models/db_crypto');
+var logger = require('../logger');
+var async = require('async');
 
 /*******************
  *  User Join
  ********************/
-exports.join = function(req, res){
+exports.join = function(req, res){  //TODO MC 구분해야함.
     if(!req.body.id || !req.body.password || !req.body.reg_id){  // parameter check
         return res.json({
             "status": false,
@@ -19,7 +20,7 @@ exports.join = function(req, res){
                 function(callback){
                     db_user.findOne({id: req.body.id}, function(err, user){
                         if(err){  // db error
-                            console.error("user_join waterfall error 1: ", err);
+                            logger.error("user_join waterfall error 1: ", err);
                             return res.json({
                                 "status": false,
                                 "message": "DB ERROR"
@@ -42,7 +43,7 @@ exports.join = function(req, res){
                     });
                     user.save(function(err, doc) {
                         if (err){
-                            console.log("user_join waterfall error 2: ", err);
+                            logger.log("user_join waterfall error 2: ", err);
                             return callback(err);
                         }else callback(null);
                     });
@@ -67,13 +68,13 @@ exports.login = function(req, res){
     }else{
         db_user.login(req.body.id, function(err, user){
             if(err){
-                console.error("Login db error 1: ", err);
+                logger.error("Login db error 1: ", err);
                 return res.json({"status": false, "message": "Login error"});
-            }else if(user.length == 0){
+            }else if(!user){
                 return res.json({"status": false, "message": "Not join"});
             }else{
-                if((req.body.id == user[0].id) && (db_crypto.do_ciper(req.body.password) == user[0].password)){
-                    req.session.user = user[0].id;  // session 저장
+                if((req.body.id == user.id) && (db_crypto.do_ciper(req.body.password) == user.password)){
+                    req.session.user = user._id;  // session 저장
                     return res.json({
                         "status": true,
                         "message": "success"
@@ -81,10 +82,18 @@ exports.login = function(req, res){
                 }else{
                     return res.json({
                         "status": false,
-                        "message": "not match"
+                        "message": "Not match"
                     });
                 }
             }
         });
     }
+};
+
+/*******************
+ *  Login Required
+ ********************/
+exports.loginRequired = function(req, res, next){
+    if(req.session.user) next();
+    else return res.json({"status": false, "message": "Not Login"});
 };

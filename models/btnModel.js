@@ -1,0 +1,45 @@
+/**
+ * Created by kingw on 2015-09-19.
+ */
+var db = require('./db_config');
+var logger = require('../logger');
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+/*******************
+ *  Button Schema
+ ********************/
+var ButtonSchema = new Schema({
+    mac_addr: {type: String, required: true},
+    func: {type: Number, default: 0},
+    _user: {type: String, ref: "User"},
+    create_at: {type: Date, default: Date.now}
+});
+
+ButtonSchema.statics.regCheck = function(data, callback){
+    var self = this;
+    self.findOne({$and:[{_user: data._user}, {mac_addr: data.mac}]}, function(err, doc){
+        if(err){
+            logger.error("btn regCheck error: ", err);
+            callback(err);
+        }
+        else callback(null, doc);
+    });
+};
+
+ButtonSchema.statics.reg = function(data, callback){
+    var self = this;
+    var button = new self({
+        "_user": data._user,
+        "mac_addr": data.mac
+    });
+    button.save(function(err){
+        if(err){
+            logger.error("btn reg error: ", err);
+            callback(err);
+        }
+        else callback(null);
+    });
+};
+
+module.exports = db.model('Button', ButtonSchema);

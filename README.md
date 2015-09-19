@@ -17,7 +17,7 @@
 | :------------ |	:-------:	| :-----------------| :--------: | :----: |
 | Join |	POST	| /user/join | complete | 15-09-17  |
 | Login |	POST	| /user/login | complete | 15-09-19  |
-| Btn Reg |	POST	| /btn/reg | incomplete |   |
+| Btn Reg |	POST	| /btn/reg | complete | 15-09-20  |
 | Btn Function Reg |	POST	| /btn/func | incomplete |   |
 | Btn Function Edit |	PUT	| /btn/func | incomplete |   |
 | Btn Function Delete |	DELETE	| /btn/func | incomplete |   |
