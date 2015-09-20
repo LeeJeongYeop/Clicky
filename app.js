@@ -31,9 +31,9 @@ require('./routes/api').initApp(app);
 
 // Server set
 var http = require('http');
-app.set('port', 80); //80번 포트로 지정
+app.set('port', 30003); // 30003번 포트로 지정 [Nginx proxy port 80]
 var server = http.createServer(app);
 server.listen(app.get('port'));
-console.log("[NHT] Clicky server: "+'Port=>'+app.get('port'));
+console.log("[NHT] [Nginx Proxy 80 port] Clicky server: "+'Port=>'+app.get('port'));
 
 module.exports = app;

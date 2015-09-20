@@ -6,16 +6,16 @@ var btnCtrl = require('../controllers/btnCtrl');
 
 exports.initApp = function(app){
     // USER
-    app.route('/user/join')
+    app.route('/clicky/user/join')
         .post(userCtrl.join);
-    app.route('/user/login')
+    app.route('/clicky/user/login')
         .post(userCtrl.login);
 
     // BUTTON
-    app.route('/btn')
+    app.route('/clicky/btn')
         .post(userCtrl.loginRequired, btnCtrl.reg)
         .delete(userCtrl.loginRequired, btnCtrl.delete);
-    app.route('/btn/func')
+    app.route('/clicky/btn/func')
         .post(userCtrl.loginRequired, btnCtrl.funcReg)
         .put(userCtrl.loginRequired, btnCtrl.funcModify)
         .delete(userCtrl.loginRequired, btnCtrl.funcDelete);

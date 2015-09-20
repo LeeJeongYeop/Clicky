@@ -15,10 +15,10 @@
 
 | Feature |	Method	| Request URL | Todo Status | Date (yymmdd) |
 | :------------ |	:-------:	| :-----------------| :--------: | :----: |
-| Join |	POST	| /user/join | complete | 15-09-17 |
-| Login |	POST	| /user/login | complete | 15-09-19 |
-| Btn Reg |	POST	| /btn | complete | 15-09-20 |
-| Btn Delete |	DELETE	| /btn | complete | 15-09-20 |
-| Btn Function Reg |	POST	| /btn/func | complete | 15-09-20 |
-| Btn Function Edit |	PUT	| /btn/func | complete | 15-09-20 |
-| Btn Function Delete |	DELETE	| /btn/func | complete | 15-09-20 |
+| Join |	POST	| /clicky/user/join | complete | 15-09-17 |
+| Login |	POST	| /clicky/user/login | complete | 15-09-19 |
+| Btn Reg |	POST	| /clicky/btn | complete | 15-09-20 |
+| Btn Delete |	DELETE	| /clicky/btn | complete | 15-09-20 |
+| Btn Function Reg |	POST	| /clicky/btn/func | complete | 15-09-20 |
+| Btn Function Edit |	PUT	| /clicky/btn/func | complete | 15-09-20 |
+| Btn Function Delete |	DELETE	| /clicky/btn/func | complete | 15-09-20 |
