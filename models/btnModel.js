@@ -3,6 +3,7 @@
  */
 var db = require('./db_config');
 var logger = require('../logger');
+var async = require('async');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
@@ -16,6 +17,9 @@ var ButtonSchema = new Schema({
     create_at: {type: Date, default: Date.now}
 });
 
+/*******************
+ *  Button Registration
+ ********************/
 ButtonSchema.statics.regCheck = function(data, callback){
     var self = this;
     self.findOne({$and:[{_user: data._user}, {mac_addr: data.mac}]}, function(err, doc){
@@ -36,6 +40,31 @@ ButtonSchema.statics.reg = function(data, callback){
     button.save(function(err){
         if(err){
             logger.error("btn reg error: ", err);
+            callback(err);
+        }
+        else callback(null);
+    });
+};
+
+/*******************
+ *  Btn Func Reg
+ ********************/
+ButtonSchema.statics.funcRegCheck = function(data, callback){
+    var self = this;
+    self.findOne({$and:[{_user: data._user}, {mac_addr: data.mac}]}, function(err, doc) {
+        if (err) {
+            logger.error("btn funcReg error 1: ", err);
+            callback(err);
+        }
+        else callback(null, doc);
+    });
+};
+
+ButtonSchema.statics.funcReg = function(data, callback){
+    var self = this;
+    self.update({_user: data._user}, {$set: {func: data.func}}, function(err){
+        if(err){
+            logger.error("btn funcReg error 2: ", err);
             callback(err);
         }
         else callback(null);

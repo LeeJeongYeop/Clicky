@@ -14,4 +14,6 @@ exports.initApp = function(app){
     // BUTTON
     app.route('/btn/reg')
         .post(userCtrl.loginRequired, btnCtrl.reg);
+    app.route('/btn/func')
+        .post(userCtrl.loginRequired, btnCtrl.funcReg)
 };

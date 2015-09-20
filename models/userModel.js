@@ -23,6 +23,9 @@ UserSchema.pre('save', function(callback){
     callback();
 });
 
+/*******************
+ *  User Login
+ ********************/
 UserSchema.statics.login = function(id, callback){
     var self = this;
     self.findOne({id: id}, function(err, user){

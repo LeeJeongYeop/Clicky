@@ -52,7 +52,8 @@ exports.join = function(req, res){  //TODO MC 구분해야함.
             function(err){
                 if(err) return res.json({"status": false, "message": "Join ERROR"});
                 else return res.json({"status": true, "message": "success"});
-            }); // waterfall
+            }
+        ); // waterfall
     }
 };
 
