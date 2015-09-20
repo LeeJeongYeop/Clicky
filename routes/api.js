@@ -12,10 +12,11 @@ exports.initApp = function(app){
         .post(userCtrl.login);
 
     // BUTTON
-    app.route('/btn/reg')
-        .post(userCtrl.loginRequired, btnCtrl.reg);
+    app.route('/btn')
+        .post(userCtrl.loginRequired, btnCtrl.reg)
+        .delete(userCtrl.loginRequired, btnCtrl.delete);
     app.route('/btn/func')
         .post(userCtrl.loginRequired, btnCtrl.funcReg)
         .put(userCtrl.loginRequired, btnCtrl.funcModify)
-        .delete(userCtrl.loginRequired, btnCtrl.funcDelete)
+        .delete(userCtrl.loginRequired, btnCtrl.funcDelete);
 };

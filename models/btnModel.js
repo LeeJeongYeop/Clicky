@@ -47,6 +47,31 @@ ButtonSchema.statics.reg = function(data, callback){
 };
 
 /*******************
+ *  Button Delete
+ ********************/
+ButtonSchema.statics.deleteCheck = function(data, callback){
+    var self = this;
+    self.findOne({$and:[{_user: data._user}, {mac_addr: data.mac}]}, function(err, doc){
+        if(err){
+            logger.error("btn deleteCheck error: ", err);
+            callback(err);
+        }
+        else callback(null, doc);
+    });
+};
+
+ButtonSchema.statics.delete = function(data, callback){
+    var self = this;
+    self.remove({$and:[{_user: data._user}, {mac_addr: data.mac}]}, function(err){
+        if(err){
+            logger.error("btn delete error: ", err);
+            callback(err);
+        }
+        else callback(null);
+    });
+};
+
+/*******************
  *  Btn Func Check
  ********************/
 ButtonSchema.statics.btnFuncCheck = function(data, callback){

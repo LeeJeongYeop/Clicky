@@ -43,6 +43,43 @@ exports.reg = function(req, res){
 };
 
 /*******************
+ *  Button Delete
+ ********************/
+exports.delete = function(req, res){
+    if (!req.body.mac_addr) {  // parameter check
+        return res.json({
+            "status": false,
+            "message": "invalid parameter"
+        });
+    } else {
+        var data = {
+            "_user": req.session.user,
+            "mac": req.body.mac_addr
+        };
+        async.waterfall([
+                function(callback){
+                    db_btn.deleteCheck(data, function(err, doc){
+                        if(err) callback(err);
+                        else if(!doc) return res.json({"status": false, "message": "No reg button"});  // 이미 등록된 button
+                        else callback(null);
+                    });
+                },
+                function(callback){
+                    db_btn.delete(data, function(err){
+                        if(err) callback(err);
+                        else callback(null);
+                    });
+                }
+            ],
+            function(err){
+                if(err) return res.json({"status": false, "message": "Button delete error"});
+                else return res.json({"status": true, "message": "success"});
+            }
+        );  // waterfall
+    }
+};
+
+/*******************
  *  Btn Func Reg
  ********************/
 exports.funcReg = function(req, res) {
