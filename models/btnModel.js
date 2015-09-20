@@ -65,7 +65,7 @@ ButtonSchema.statics.btnFuncCheck = function(data, callback){
  ********************/
 ButtonSchema.statics.funcReg = function(data, callback){
     var self = this;
-    self.update({_user: data._user}, {$set: {func: data.func}}, function(err){
+    self.update({$and:[{_user: data._user}, {mac_addr: data.mac}]}, {$set: {func: data.func}}, function(err){
         if(err){
             logger.error("btn funcReg error : ", err);
             callback(err);
@@ -79,7 +79,7 @@ ButtonSchema.statics.funcReg = function(data, callback){
  ********************/
 ButtonSchema.statics.funcModify = function(data, callback){
     var self = this;
-    self.update({_user: data._user}, {$set: {func: data.func}}, function(err){
+    self.update({$and:[{_user: data._user}, {mac_addr: data.mac}]}, {$set: {func: data.func}}, function(err){
         if(err){
             logger.error("btn funcModify error : ", err);
             callback(err);
@@ -87,4 +87,20 @@ ButtonSchema.statics.funcModify = function(data, callback){
         else callback(null);
     });
 };
+
+/*******************
+ *  Btn Func Delete
+ ********************/
+ButtonSchema.statics.funcDelete = function(data, callback){
+    var self = this;
+    var DELETE = 0;
+    self.update({$and:[{_user: data._user}, {mac_addr: data.mac}]}, {$set: {func: DELETE}}, function(err){
+        if(err){
+            logger.error("btn funcDelete error : ", err);
+            callback(err);
+        }
+        else callback(null);
+    });
+};
+
 module.exports = db.model('Button', ButtonSchema);

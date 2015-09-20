@@ -17,4 +17,5 @@ exports.initApp = function(app){
     app.route('/btn/func')
         .post(userCtrl.loginRequired, btnCtrl.funcReg)
         .put(userCtrl.loginRequired, btnCtrl.funcModify)
+        .delete(userCtrl.loginRequired, btnCtrl.funcDelete)
 };
