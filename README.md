@@ -19,6 +19,6 @@
 | Login |	POST	| /user/login | complete | 15-09-19  |
 | Btn Reg |	POST	| /btn/reg | complete | 15-09-20  |
 | Btn Function Reg |	POST	| /btn/func | complete | 15-09-20  |
-| Btn Function Edit |	PUT	| /btn/func | incomplete |   |
+| Btn Function Edit |	PUT	| /btn/func | complete | 15-09-20  |
 | Btn Function Delete |	DELETE	| /btn/func | incomplete |   |
 | Btn Delete |	DELETE	| /btn/del | incomplete |   |

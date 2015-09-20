@@ -16,4 +16,5 @@ exports.initApp = function(app){
         .post(userCtrl.loginRequired, btnCtrl.reg);
     app.route('/btn/func')
         .post(userCtrl.loginRequired, btnCtrl.funcReg)
+        .put(userCtrl.loginRequired, btnCtrl.funcModify)
 };

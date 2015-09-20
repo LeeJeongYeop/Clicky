@@ -47,28 +47,44 @@ ButtonSchema.statics.reg = function(data, callback){
 };
 
 /*******************
- *  Btn Func Reg
+ *  Btn Func Check
  ********************/
-ButtonSchema.statics.funcRegCheck = function(data, callback){
+ButtonSchema.statics.btnFuncCheck = function(data, callback){
     var self = this;
     self.findOne({$and:[{_user: data._user}, {mac_addr: data.mac}]}, function(err, doc) {
         if (err) {
-            logger.error("btn funcReg error 1: ", err);
+            logger.error("btn Func Check error : ", err);
             callback(err);
         }
         else callback(null, doc);
     });
 };
 
+/*******************
+ *  Btn Func Reg
+ ********************/
 ButtonSchema.statics.funcReg = function(data, callback){
     var self = this;
     self.update({_user: data._user}, {$set: {func: data.func}}, function(err){
         if(err){
-            logger.error("btn funcReg error 2: ", err);
+            logger.error("btn funcReg error : ", err);
             callback(err);
         }
         else callback(null);
     });
 };
 
+/*******************
+ *  Btn Func Modify
+ ********************/
+ButtonSchema.statics.funcModify = function(data, callback){
+    var self = this;
+    self.update({_user: data._user}, {$set: {func: data.func}}, function(err){
+        if(err){
+            logger.error("btn funcModify error : ", err);
+            callback(err);
+        }
+        else callback(null);
+    });
+};
 module.exports = db.model('Button', ButtonSchema);
