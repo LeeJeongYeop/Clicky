@@ -22,3 +22,4 @@
 | Btn Function Reg |	POST	| /clicky/btn/func | complete | 15-09-20 |
 | Btn Function Edit |	PUT	| /clicky/btn/func | complete | 15-09-20 |
 | Btn Function Delete |	DELETE	| /clicky/btn/func | complete | 15-09-20 |
+| Btn Click(arduino) |	POST	| /clicky/ardu/click | complete | 15-11-07 |

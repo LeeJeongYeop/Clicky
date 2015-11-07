@@ -19,4 +19,8 @@ exports.initApp = function(app){
         .post(userCtrl.loginRequired, btnCtrl.funcReg)
         .put(userCtrl.loginRequired, btnCtrl.funcModify)
         .delete(userCtrl.loginRequired, btnCtrl.funcDelete);
+
+    // ARDUINO
+    app.route('/clicky/ardu/click')
+        .post(btnCtrl.click);
 };

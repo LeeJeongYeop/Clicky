@@ -128,4 +128,25 @@ ButtonSchema.statics.funcDelete = function(data, callback){
     });
 };
 
+/*******************
+ *  Btn Click (arduino)
+ ********************/
+ButtonSchema.statics.click = function(data, done){
+    var self = this;
+    self.findOne({mac_addr: data.mac_addr})
+        .populate('_user')
+        .exec(function(err, doc){
+            if(err){
+                logger.error("btn click(arduino) error_1 : ", err);
+                done(false, "Btn Click DB error");
+            }else{
+                if(doc){
+                    done(true, "success", doc._user.reg_id);
+                }else{
+                    done(false, "Not register Button");
+                }
+            }
+        });
+};
+
 module.exports = db.model('Button', ButtonSchema);

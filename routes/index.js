@@ -6,7 +6,7 @@ var my = require('../my_conf');
 /*******************
 *  TEST
 ********************/
-router.post('/', function(req, res) {
+router.post('/clicky', function(req, res) {
 	console.log('IP : ', req.connection.remoteAddress);
 	console.log('Request : ', req.body);
 	return res.json({
@@ -21,7 +21,7 @@ router.post('/', function(req, res) {
 /*******************
  *  GCM TEST
  ********************/
-router.post('/gcm', function(req, res){
+router.post('/clicky/gcm', function(req, res){
     console.log('req.body:', req.body);
     my.gcm(req.body.msg, req.body.regId);
     return res.json({
