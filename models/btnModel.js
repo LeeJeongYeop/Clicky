@@ -2,9 +2,9 @@
  * Created by kingw on 2015-09-19.
  */
 var db = require('./db_config');
+var mongoose = require('mongoose');
 var logger = require('../logger');
 var async = require('async');
-var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 /*******************
@@ -12,7 +12,16 @@ var Schema = mongoose.Schema;
  ********************/
 var ButtonSchema = new Schema({
     mac_addr: {type: String, required: true},
-    func: {type: Number, default: 0},
+    fid: {type: Number, default: 0},  // 1)타이머,2)알람,3)스톱워치,4)체커,5)타이머,6)메세지
+    title: {type: String},
+    data: {
+        cnt: Number,  //  1) 카운터
+        start: String,  //  2) 알람
+        end: String,  //  2) 알람
+        chk: Number,  // 4) 체커
+        time: String,  // 5) 타이머
+        content: String  // 6) 메세지
+    },
     _user: {type: String, ref: "User"},
     create_at: {type: Date, default: Date.now}
 });
@@ -74,9 +83,9 @@ ButtonSchema.statics.delete = function(data, callback){
 /*******************
  *  Btn Func Check
  ********************/
-ButtonSchema.statics.btnFuncCheck = function(data, callback){
+ButtonSchema.statics.btnFuncCheck = function(_user, data, callback){
     var self = this;
-    self.findOne({$and:[{_user: data._user}, {mac_addr: data.mac}]}, function(err, doc) {
+    self.findOne({$and:[{_user: _user}, {mac_addr: data.mac_addr}]}, function(err, doc) {
         if (err) {
             logger.error("btn Func Check error : ", err);
             callback(err);
@@ -88,15 +97,89 @@ ButtonSchema.statics.btnFuncCheck = function(data, callback){
 /*******************
  *  Btn Func Reg
  ********************/
-ButtonSchema.statics.funcReg = function(data, callback){
+ButtonSchema.statics.countReg = function(_user, data, callback){
     var self = this;
-    self.update({$and:[{_user: data._user}, {mac_addr: data.mac}]}, {$set: {func: data.func}}, function(err){
-        if(err){
-            logger.error("btn funcReg error : ", err);
-            callback(err);
+    self.update(
+        {$and:[{_user: _user}, {mac_addr: data.mac_addr}]},
+        {$set: {fid: data.fid, title: data.title, data: {cnt: data.cnt}}},
+        function(err){
+            if(err){
+                logger.error("btn funcReg error : ", err);
+                callback(err);
+            }
+            else { callback(null); }
         }
-        else callback(null);
-    });
+    );
+};
+ButtonSchema.statics.alarmReg = function(_user, data, callback){
+    var self = this;
+    self.update(
+        {$and:[{_user: _user}, {mac_addr: data.mac_addr}]},
+        {$set: {fid: data.fid, title:data.title, data: {start: data.start, end: data.end}}},
+        function(err){
+            if(err){
+                logger.error("btn funcReg error : ", err);
+                callback(err);
+            }
+            else { callback(null); }
+        }
+    );
+};
+ButtonSchema.statics.stopwatchReg = function(_user, data, callback){
+    var self = this;
+    self.update(
+        {$and:[{_user: _user}, {mac_addr: data.mac_addr}]},
+        {$set: {fid: data.fid, title:data.title}},
+        function(err){
+            if(err){
+                logger.error("btn funcReg error : ", err);
+                callback(err);
+            }
+            else { callback(null); }
+        }
+    );
+};
+ButtonSchema.statics.checkReg = function(_user, data, callback){
+    var self = this;
+    self.update(
+        {$and:[{_user: _user}, {mac_addr: data.mac_addr}]},
+        {$set: {fid: data.fid, title:data.title, data: {chk: data.chk}}},
+        function(err){
+            if(err){
+                logger.error("btn funcReg error : ", err);
+                callback(err);
+            }
+            else { callback(null); }
+        }
+    );
+};
+ButtonSchema.statics.timerReg = function(_user, data, callback){
+    var self = this;
+    self.update(
+        {$and:[{_user: _user}, {mac_addr: data.mac_addr}]},
+        {$set: {fid: data.fid, title:data.title, data: {time: data.time}}},
+        function(err){
+            if(err){
+                logger.error("btn funcReg error : ", err);
+                callback(err);
+            }
+            else { callback(null); }
+        }
+    );
+};
+ButtonSchema.statics.msgReg = function(_user, data, callback){
+    var self = this;
+    self.update(
+        {$and:[{_user: _user}, {mac_addr: data.mac_addr}]},
+        {$set: {fid: data.fid, title:data.title, data: {content: data.content}}},
+        function(err){
+            if(err){
+                logger.error("btn funcReg error : ", err);
+                callback(err);
+            }
+            else { callback(null); }
+        }
+    );
 };
 
 /*******************

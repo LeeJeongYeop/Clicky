@@ -61,6 +61,7 @@ exports.join = function(req, res){  //TODO MC 구분해야함.
  *  User Login
  ********************/
 exports.login = function(req, res){
+    logger.info("req.body:", req.body);
     if(!req.body.id || !req.body.password){  // parameter check
         return res.json({
             "status": false,

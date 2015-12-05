@@ -3,6 +3,7 @@
  */
 var userCtrl = require('../controllers/userCtrl');
 var btnCtrl = require('../controllers/btnCtrl');
+var funcParamCheck = require('../controllers/funcParamCheck');
 
 exports.initApp = function(app){
     // USER
@@ -16,7 +17,7 @@ exports.initApp = function(app){
         .post(userCtrl.loginRequired, btnCtrl.reg)
         .delete(userCtrl.loginRequired, btnCtrl.delete);
     app.route('/clicky/btn/func')
-        .post(userCtrl.loginRequired, btnCtrl.funcReg)
+        .post(userCtrl.loginRequired, funcParamCheck.paramCheck, btnCtrl.funcReg)
         .put(userCtrl.loginRequired, btnCtrl.funcModify)
         .delete(userCtrl.loginRequired, btnCtrl.funcDelete);
 

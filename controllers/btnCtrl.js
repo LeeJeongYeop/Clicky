@@ -61,7 +61,7 @@ exports.delete = function(req, res){
                 function(callback){
                     db_btn.deleteCheck(data, function(err, doc){
                         if(err) callback(err);
-                        else if(!doc) return res.json({"status": false, "message": "No reg button"});  // 이미 등록된 button
+                        else if(!doc) return res.json({"status": false, "message": "No reg button"});  // 등록된 버튼 없음
                         else callback(null);
                     });
                 },
@@ -84,39 +84,59 @@ exports.delete = function(req, res){
  *  Btn Func Reg
  ********************/
 exports.funcReg = function(req, res) {
-    if (!req.body.mac_addr || !req.body.func_id) {  // parameter check
-        return res.json({
-            "status": false,
-            "message": "invalid parameter"
-        });
-    } else {
-        var data = {
-            "_user": req.session.user,
-            "mac": req.body.mac_addr,
-            "func": req.body.func_id
-        };
-        async.waterfall([
-                function (callback) {
-                    db_btn.btnFuncCheck(data, function (err, doc) {
-                        if (err) callback(err);
-                        else if(!doc) res.json({"status": false, "message": "No reg button"});  // 등록된 버튼이 없음
-                        else if (doc.func != 0) res.json({"status": false, "message": "Function exists"});  // 기능이 등록된 button
-                        else callback(null);
-                    });
-                },
-                function (callback) {
-                    db_btn.funcReg(data, function (err) {
-                        if (err) callback(err);
-                        else callback(null);
-                    });
+    logger.info("req.body:", req.body);
+    var _user = req.session.user;
+    async.waterfall([
+            function (callback) {
+                db_btn.btnFuncCheck(_user, req.body, function (err, doc) {
+                    if (err) callback(err);
+                    else if(!doc) res.json({"status": false, "message": "No reg button"});  // 등록된 버튼이 없음
+                    else callback(null);
+                });
+            },
+            function (callback) {
+                switch (req.body.fid){
+                    case "1":  // Counter
+                        db_btn.countReg(_user, req.body, function (err) {
+                            if(err){ callback(err); }
+                            else{ callback(null); }
+                        });break;
+                    case "2":  // Alarm
+                        db_btn.alarmReg(_user, req.body, function (err) {
+                            if(err){ callback(err); }
+                            else{ callback(null); }
+                        });break;
+                    case "3":  // StopWatch
+                        db_btn.stopwatchReg(_user, req.body, function (err) {
+                            if(err){ callback(err); }
+                            else{ callback(null); }
+                        });break;
+                    case "4":  // Check
+                        db_btn.checkReg(_user, req.body, function (err) {
+                            if(err){ callback(err); }
+                            else{ callback(null); }
+                        });break;
+                    case "5":  // Timer
+                        db_btn.timerReg(_user, req.body, function (err) {
+                            if(err){ callback(err); }
+                            else{ callback(null); }
+                        });break;
+                    case "6":  // Message
+                        db_btn.msgReg(_user, req.body, function (err) {
+                            if(err){ callback(err); }
+                            else{ callback(null); }
+                        });break;
+                    default :
+                        logger.error("Bad fid");
+                        callback("Bad fid");break;
                 }
-            ],
-            function (err) {
-                if (err) return res.json({"status": false, "message": "Button func reg error"});
-                else return res.json({"status": true, "message": "success"});
             }
-        );  // waterfall
-    }
+        ],
+        function (err) {
+            if (err) return res.json({"status": false, "message": "Button func reg error"});
+            else return res.json({"status": true, "message": "success"});
+        }
+    );  // waterfall
 };
 
 /*******************
