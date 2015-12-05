@@ -212,7 +212,7 @@ ButtonSchema.statics.click = function(data, done){
                 done(false, "Btn Click DB error");
             }else{
                 if(doc){
-                    done(true, "success", doc._user.reg_id);
+                    done(true, "success", doc);
                 }else{
                     done(false, "Not register Button");
                 }

@@ -3,6 +3,7 @@
  */
 var userCtrl = require('../controllers/userCtrl');
 var btnCtrl = require('../controllers/btnCtrl');
+var arduCtrl = require('../controllers/arduCtrl');
 var funcParamCheck = require('../controllers/funcParamCheck');
 
 exports.initApp = function(app){
@@ -24,5 +25,5 @@ exports.initApp = function(app){
 
     // ARDUINO
     app.route('/clicky/ardu/click')
-        .post(btnCtrl.click);
+        .post(arduCtrl.click);
 };

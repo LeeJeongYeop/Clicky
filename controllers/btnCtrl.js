@@ -2,7 +2,6 @@
  * Created by kingw on 2015-09-19.
  */
 var db_btn = require('../models/btnModel');
-var myf = require('../my_conf');
 var logger = require('../logger');
 var async = require('async');
 
@@ -163,7 +162,10 @@ exports.funcView = function(req, res) {
             }else{
                 status = true;
                 message = "success";
-                data = doc.data;
+                data = {
+                    "title": doc.title,
+                    "info": doc.data
+                }
             }
             return res.json({
                 "status": status,
@@ -207,31 +209,5 @@ exports.funcDelete = function(req, res) {
                 else return res.json({"status": true, "message": "success"});
             }
         );  // waterfall
-    }
-};
-
-/*******************
- *  Btn Click (arduino)
- ********************/
-exports.click = function(req, res){
-    if(!req.body.mac_addr){   // parameter check
-        return res.json({
-            "status": false,
-            "message": "invalid parameter"
-        });
-    }else{
-        var data = {
-            "mac_addr": req.body.mac_addr
-        };
-        db_btn.click(data, function(status, messgae, reg_id){
-            if(status){
-                logger.info("reg_id:", reg_id);
-                my.gcm("success", reg_id);
-            }
-            return res.json({
-                "status": status,
-                "message": messgae
-            });
-        });
     }
 };
