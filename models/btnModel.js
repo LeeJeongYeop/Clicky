@@ -129,7 +129,7 @@ ButtonSchema.statics.stopwatchReg = function(_user, data, callback){
     var self = this;
     self.update(
         {$and:[{_user: _user}, {mac_addr: data.mac_addr}]},
-        {$set: {fid: data.fid, title:data.title}},
+        {$set: {fid: data.fid, title:data.title, data:{}}},
         function(err){
             if(err){
                 logger.error("btn funcReg error : ", err);
@@ -180,20 +180,6 @@ ButtonSchema.statics.msgReg = function(_user, data, callback){
             else { callback(null); }
         }
     );
-};
-
-/*******************
- *  Btn Func Modify
- ********************/
-ButtonSchema.statics.funcModify = function(data, callback){
-    var self = this;
-    self.update({$and:[{_user: data._user}, {mac_addr: data.mac}]}, {$set: {func: data.func}}, function(err){
-        if(err){
-            logger.error("btn funcModify error : ", err);
-            callback(err);
-        }
-        else callback(null);
-    });
 };
 
 /*******************

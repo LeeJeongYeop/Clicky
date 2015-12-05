@@ -18,10 +18,9 @@ exports.initApp = function(app){
         .delete(userCtrl.loginRequired, btnCtrl.delete);
     app.route('/clicky/btn/func')
         .post(userCtrl.loginRequired, funcParamCheck.paramCheck, btnCtrl.funcReg)
-        .put(userCtrl.loginRequired, btnCtrl.funcModify)
         .delete(userCtrl.loginRequired, btnCtrl.funcDelete);
     app.route('/clicky/btn/func/:mac_addr')
-        .get(userCtrl.loginRequired, btnCtrl.funcView)
+        .get(userCtrl.loginRequired, btnCtrl.funcView);
 
     // ARDUINO
     app.route('/clicky/ardu/click')
