@@ -184,21 +184,19 @@ exports.funcDelete = function(req, res) {
             "message": "invalid parameter"
         });
     } else {
-        var data = {
-            "_user": req.session.user,
-            "mac": req.body.mac_addr
-        };
+        logger.info("req.body:", req.body);
+        var _user = req.session.user;
         async.waterfall([
                 function (callback) {
-                    db_btn.btnFuncCheck(data, function (err, doc) {
+                    db_btn.btnFuncCheck(_user, req.body, function (err, doc) {
                         if (err) callback(err);
                         else if(!doc) res.json({"status": false, "message": "No reg button"});  // 등록된 버튼이 없음
-                        else if (doc.func == 0) res.json({"status": false, "message": "Already not reg Function"});  // 이미 기능이 없는 버튼
+                        else if (doc.fid == 0) res.json({"status": false, "message": "Already not reg Function"});  // 이미 기능이 없는 버튼
                         else callback(null);
                     });
                 },
                 function (callback) {
-                    db_btn.funcDelete(data, function (err) {
+                    db_btn.funcDelete(_user, req.body, function (err) {
                         if (err) callback(err);
                         else callback(null);
                     });

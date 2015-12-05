@@ -185,16 +185,18 @@ ButtonSchema.statics.msgReg = function(_user, data, callback){
 /*******************
  *  Btn Func Delete
  ********************/
-ButtonSchema.statics.funcDelete = function(data, callback){
+ButtonSchema.statics.funcDelete = function(_user, data, callback){
     var self = this;
     var DELETE = 0;
-    self.update({$and:[{_user: data._user}, {mac_addr: data.mac}]}, {$set: {func: DELETE}}, function(err){
-        if(err){
-            logger.error("btn funcDelete error : ", err);
-            callback(err);
-        }
-        else callback(null);
-    });
+    self.update({$and:[{_user: _user}, {mac_addr: data.mac_addr}]},
+        {$set: {fid: DELETE, title: null, data: {}}},
+        function(err){
+            if(err){
+                logger.error("btn funcDelete error : ", err);
+                callback(err);
+            }
+            else callback(null);
+        });
 };
 
 /*******************
