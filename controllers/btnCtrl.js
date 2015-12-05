@@ -140,6 +140,41 @@ exports.funcReg = function(req, res) {
 };
 
 /*******************
+ *  Btn Func View
+ ********************/
+exports.funcView = function(req, res) {
+    if (!req.params.mac_addr) {  // parameter check
+        return res.json({
+            "status": false,
+            "message": "invalid parameter"
+        });
+    } else {
+        var _user = req.session.user;
+        db_btn.btnFuncCheck(_user, req.params, function (err, doc) {  // 버튼 기능 있는지 확인하는 model 이용
+            var status = false,
+                message = "error",  // default err
+                data = null;
+            if (err) {
+                message = "Button func view error"
+            }else if(!doc){  // 등록된 버튼이 없음
+                message = "Not found Button"
+            }else if(doc.fid == 0){
+                message = "Not register Button's function"
+            }else{
+                status = true;
+                message = "success";
+                data = doc.data;
+            }
+            return res.json({
+                "status": status,
+                "message": message,
+                "data": data
+            });
+        });
+    }
+};
+
+/*******************
  *  Btn Func Modify
  ********************/
 exports.funcModify = function(req, res) {
