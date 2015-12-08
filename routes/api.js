@@ -15,6 +15,7 @@ exports.initApp = function(app){
 
     // BUTTON
     app.route('/clicky/btn')
+        .get(userCtrl.loginRequired, btnCtrl.list)
         .post(userCtrl.loginRequired, btnCtrl.reg)
         .delete(userCtrl.loginRequired, btnCtrl.delete);
     app.route('/clicky/btn/func')

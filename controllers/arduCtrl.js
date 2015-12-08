@@ -19,14 +19,14 @@ exports.click = function(req, res){
         var data = {
             "mac_addr": req.body.mac_addr
         };
-        db_btn.click(data, function(status, messgae, doc){
+        db_btn.click(data, function(status, meesage, doc){
             if(status){
                 logger.info("reg_id:", doc._user.reg_id);
                 my.gcm(req.body.mac_addr, doc._user.reg_id);
             }
             return res.json({
                 "status": status,
-                "message": messgae
+                "message": meesage
             });
         });
     }

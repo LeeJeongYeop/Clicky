@@ -68,7 +68,6 @@ ButtonSchema.statics.deleteCheck = function(data, callback){
         else callback(null, doc);
     });
 };
-
 ButtonSchema.statics.delete = function(data, callback){
     var self = this;
     self.remove({$and:[{_user: data._user}, {mac_addr: data.mac}]}, function(err){
@@ -78,6 +77,23 @@ ButtonSchema.statics.delete = function(data, callback){
         }
         else callback(null);
     });
+};
+
+/*******************
+ *  Button List
+ ********************/
+ButtonSchema.statics.list = function(user, callback){
+    var self = this;
+    logger.info("data", user);
+    self.find({_user: user})
+        .select({"_id": 0, "mac_addr": 1, "title": 1, "fid": 1})
+        .exec(function(err, doc){
+            if(err){
+                logger.error("btn deleteCheck error: ", err);
+                callback(err);
+            }
+            else callback(null, doc);
+        });
 };
 
 /*******************

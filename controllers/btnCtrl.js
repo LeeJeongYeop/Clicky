@@ -45,6 +45,26 @@ exports.reg = function(req, res){
 /*******************
  *  Button Delete
  ********************/
+exports.list = function(req, res){
+    db_btn.list(req.session.user, function(err, doc){
+        var status = true;
+        var message = "success";
+        if(err){
+            status = false;
+            message = "Button Get List Fail";
+            doc = null;
+        }
+        return res.json({
+            "status": status,
+            "message": message,
+            "data": doc
+        });
+    });
+};
+
+/*******************
+ *  Button Delete
+ ********************/
 exports.delete = function(req, res){
     if (!req.body.mac_addr) {  // parameter check
         return res.json({
