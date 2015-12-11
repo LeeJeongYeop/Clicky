@@ -16,18 +16,64 @@ exports.click = function(req, res){
             "message": "invalid parameter"
         });
     }else{
-        var data = {
-            "mac_addr": req.body.mac_addr
-        };
-        db_btn.click(data, function(status, meesage, doc){
-            if(status){
-                logger.info("reg_id:", doc._user.reg_id);
-                my.gcm(req.body.mac_addr, doc._user.reg_id);
+        var message = "success";
+        async.waterfall([
+                function(callback){  // 버튼 화인
+                    db_btn.click(req.body.mac_addr, function(err, doc){
+                        if(err){
+                            message = "Button Check Error";
+                            callback(err);
+                        }else{
+                            callback(null, doc);
+                        }
+                    });
+                },
+                function(doc, callback){
+                    if(doc.fid == 1){  // 카운터 버튼 카운터 올리기
+                        db_btn.counterClick(req.body.mac_addr, function(err){
+                            if(err){
+                                message = "Counter Button Click Error";
+                                callback(err);
+                            }else{
+                                callback(null, doc);
+                            }
+                        });
+                    }else if(doc.fid == 4){  //  check 버튼 감소 시키기
+                        if(doc.data.chk < 1){
+                            callback(null, doc);
+                        }else{
+                            var data = {
+                                "mac_addr": req.body.mac_addr,
+                                "chk": (doc.data.chk - 1)
+                            };
+                            db_btn.checkClick(data, function(err){
+                                if(err){
+                                    message = "Check Button Click Error";
+                                    callback(err);
+                                }else{
+                                    callback(null, doc);
+                                }
+                            });
+                        }
+                    }else{
+                        callback(null, doc);
+                    }
+                }
+            ],
+            function(err, doc){
+                if(err){
+                    return res.json({
+                        "status": false,
+                        "message": message
+                    });
+                }else{
+                    my.gcm(req.body.mac_addr, doc._user.reg_id);
+                    return res.json({
+                        "status": true,
+                        "message": message
+                    });
+                }
             }
-            return res.json({
-                "status": status,
-                "message": meesage
-            });
-        });
+        );  // waterfall
     }
 };

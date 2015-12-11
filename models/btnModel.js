@@ -218,22 +218,53 @@ ButtonSchema.statics.funcDelete = function(_user, data, callback){
 /*******************
  *  Btn Click (arduino)
  ********************/
-ButtonSchema.statics.click = function(data, done){
+ButtonSchema.statics.click = function(mac_addr, done){
     var self = this;
-    self.findOne({mac_addr: data.mac_addr})
+    self.findOne({mac_addr: mac_addr})
         .populate('_user')
         .exec(function(err, doc){
             if(err){
                 logger.error("btn click(arduino) error_1 : ", err);
-                done(false, "Btn Click DB error");
+                done(err);
             }else{
                 if(doc){
-                    done(true, "success", doc);
+                    done(null, doc);
                 }else{
-                    done(false, "Not register Button");
+                    logger.error("btn click(arduino) Not register Button");
+                    done("Not register Button");
                 }
             }
         });
+};
+
+/*******************
+ *  Counter Btn Click (arduino)
+ ********************/
+ButtonSchema.statics.counterClick = function(mac_addr, done){
+    var self = this;
+    self.update({mac_addr: mac_addr}, {$inc: {"data.cnt": 1}}, function(err){
+        if(err){
+            logger.error("Counter Click inc error:", err);
+            done(err);
+        }else{
+            done(null);
+        }
+    });
+};
+
+/*******************
+ *  Check Btn Click (arduino)
+ ********************/
+ButtonSchema.statics.checkClick = function(data, done){
+    var self = this;
+    self.update({mac_addr: data.mac_addr}, {$set: {"data.chk": data.chk}}, function(err){
+        if(err){
+            logger.error("Check Click inc error:", err);
+            done(err);
+        }else{
+            done(null);
+        }
+    });
 };
 
 module.exports = db.model('Button', ButtonSchema);
