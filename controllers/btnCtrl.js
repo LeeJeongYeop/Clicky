@@ -107,7 +107,11 @@ exports.funcReg = function(req, res) {
     var _user = req.session.user;
     async.waterfall([
             function (callback) {
-                db_btn.btnFuncCheck(_user, req.body, function (err, doc) {
+                var data = {
+                    "_user": _user,
+                    "mac_addr": req.body.mac_addr
+                };
+                db_btn.btnFuncCheck(data, function (err, doc) {
                     if (err) callback(err);
                     else if(!doc) res.json({"status": false, "message": "No reg button"});  // 등록된 버튼이 없음
                     else callback(null);
@@ -115,7 +119,7 @@ exports.funcReg = function(req, res) {
             },
             function (callback) {
                 switch (req.body.fid){
-                    case "1":  // Counter
+                    case "1":  // Count
                         db_btn.countReg(_user, req.body, function (err) {
                             if(err){ callback(err); }
                             else{ callback(null); }
@@ -168,8 +172,11 @@ exports.funcView = function(req, res) {
             "message": "invalid parameter"
         });
     } else {
-        var _user = req.session.user;
-        db_btn.btnFuncCheck(_user, req.params, function (err, doc) {  // 버튼 기능 있는지 확인하는 model 이용
+        var data = {
+            "_user": req.session.user,
+            "mac_addr": req.params.mac_addr
+        };
+        db_btn.btnFuncCheck(data, function (err, doc) {  // 버튼 기능 있는지 확인하는 model 이용
             var status = false,
                 message = "error",  // default err
                 data = null;
@@ -184,6 +191,7 @@ exports.funcView = function(req, res) {
                 message = "success";
                 data = {
                     "title": doc.title,
+                    "fid": doc.fid,
                     "info": doc.data
                 }
             }
@@ -207,10 +215,13 @@ exports.funcDelete = function(req, res) {
         });
     } else {
         logger.info("req.body:", req.body);
-        var _user = req.session.user;
+        var data = {
+            "_user": req.session.user,
+            "mac_addr": req.body.mac_addr
+        }
         async.waterfall([
                 function (callback) {
-                    db_btn.btnFuncCheck(_user, req.body, function (err, doc) {
+                    db_btn.btnFuncCheck(data, function (err, doc) {
                         if (err) callback(err);
                         else if(!doc) res.json({"status": false, "message": "No reg button"});  // 등록된 버튼이 없음
                         else if (doc.fid == 0) res.json({"status": false, "message": "Already not reg Function"});  // 이미 기능이 없는 버튼
@@ -218,7 +229,7 @@ exports.funcDelete = function(req, res) {
                     });
                 },
                 function (callback) {
-                    db_btn.funcDelete(_user, req.body, function (err) {
+                    db_btn.funcDelete(data, function (err) {
                         if (err) callback(err);
                         else callback(null);
                     });
@@ -227,6 +238,116 @@ exports.funcDelete = function(req, res) {
             function (err) {
                 if (err) return res.json({"status": false, "message": "Button func reg error"});
                 else return res.json({"status": true, "message": "success"});
+            }
+        );  // waterfall
+    }
+};
+
+/*******************
+ *  Count Reset
+ ********************/
+exports.countReset = function(req, res){
+    if (!req.body.mac_addr) {  // parameter check
+        return res.json({
+            "status": false,
+            "message": "invalid parameter"
+        });
+    } else {
+        var data = {
+            "_user": req.session.user,
+            "mac_addr": req.body.mac_addr
+        };
+        async.waterfall([
+                function(callback){
+                    db_btn.btnFuncCheck(data, function (err, doc) {
+                        if (err){
+                            callback(err, "Button Function Check Error");
+                        }else if (!doc){
+                            res.json({"status": false, "message": "No reg button"});  // 등록된 버튼이 없음
+                        }else if (doc.fid == 0 || doc.fid != 1){
+                            res.json({
+                                "status": false,
+                                "message": "Not match or No reg Function"
+                            }); // 기능이 없는 버튼이거나 Count 버튼이 아님
+                        }else{
+                            callback(null);
+                        }
+                    });
+                },
+                function(callback){
+                    db_btn.countReset(data, function(err){
+                        if(err){
+                            callback(err, "Counter Reset Error");
+                        }else{
+                            callback(null, "success");
+                        }
+                    });
+                }
+            ],
+            function(err, message){
+                var status = true;
+                if(err){
+                    status = false;
+                }
+                return res.json({
+                    "status": status,
+                    "message": message
+                });
+            }
+        );  // waterfall
+    }
+};
+
+/*******************
+ *  Check Reset
+ ********************/
+exports.checkReset = function(req, res){
+    if (!req.body.mac_addr) {  // parameter check
+        return res.json({
+            "status": false,
+            "message": "invalid parameter"
+        });
+    } else {
+        var data = {
+            "_user": req.session.user,
+            "mac_addr": req.body.mac_addr
+        };
+        async.waterfall([
+                function(callback){
+                    db_btn.btnFuncCheck(data, function (err, doc) {
+                        if (err){
+                            callback(err, "Button Function Check Error");
+                        }else if (!doc){
+                            res.json({"status": false, "message": "No reg button"});  // 등록된 버튼이 없음
+                        }else if (doc.fid == 0 || doc.fid != 4){
+                            res.json({
+                                "status": false,
+                                "message": "Not match or No reg Function"
+                            }); // 기능이 없는 버튼이거나 Check 버튼이 아님
+                        }else{
+                            callback(null, doc.data.chk_max);
+                        }
+                    });
+                },
+                function(chk_max, callback){
+                    db_btn.checkReset(data, chk_max, function(err){
+                        if(err){
+                            callback(err, "Counter Reset Error");
+                        }else{
+                            callback(null, "success");
+                        }
+                    });
+                }
+            ],
+            function(err, message){
+                var status = true;
+                if(err){
+                    status = false;
+                }
+                return res.json({
+                    "status": status,
+                    "message": message
+                });
             }
         );  // waterfall
     }

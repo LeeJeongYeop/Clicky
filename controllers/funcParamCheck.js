@@ -11,14 +11,7 @@ exports.paramCheck = function(req, res, next){
     }else{  // func parameter check
         switch (req.body.fid) {
             case "1":
-                if(!req.body.cnt){
-                    return res.json({
-                        "status": false,
-                        "message": "invalid parameter"
-                    });
-                }else{
-                    next();
-                }
+                next();
                 break;
             case "2":
                 if(!req.body.start || !req.body.end){

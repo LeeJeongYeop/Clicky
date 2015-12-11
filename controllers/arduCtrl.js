@@ -29,10 +29,10 @@ exports.click = function(req, res){
                     });
                 },
                 function(doc, callback){
-                    if(doc.fid == 1){  // 카운터 버튼 카운터 올리기
-                        db_btn.counterClick(req.body.mac_addr, function(err){
+                    if(doc.fid == 1){  // 카운트 버튼 카운트 올리기
+                        db_btn.countClick(req.body.mac_addr, function(err){
                             if(err){
-                                message = "Counter Button Click Error";
+                                message = "Count Button Click Error";
                                 callback(err);
                             }else{
                                 callback(null, doc);

@@ -18,7 +18,8 @@ var ButtonSchema = new Schema({
         cnt: Number,  //  1) 카운터
         start: String,  //  2) 알람
         end: String,  //  2) 알람
-        chk: Number,  // 4) 체커
+        chk_max: Number, // 4) 체크
+        chk: Number,  // 4) 체크
         time: String,  // 5) 타이머
         content: String  // 6) 메세지
     },
@@ -99,9 +100,9 @@ ButtonSchema.statics.list = function(user, callback){
 /*******************
  *  Btn Func Check
  ********************/
-ButtonSchema.statics.btnFuncCheck = function(_user, data, callback){
+ButtonSchema.statics.btnFuncCheck = function(data, callback){
     var self = this;
-    self.findOne({$and:[{_user: _user}, {mac_addr: data.mac_addr}]}, function(err, doc) {
+    self.findOne({$and:[{_user: data._user}, {mac_addr: data.mac_addr}]}, function(err, doc) {
         if (err) {
             logger.error("btn Func Check error : ", err);
             callback(err);
@@ -115,9 +116,10 @@ ButtonSchema.statics.btnFuncCheck = function(_user, data, callback){
  ********************/
 ButtonSchema.statics.countReg = function(_user, data, callback){
     var self = this;
+    var DEFAULT_COUNT = 0;
     self.update(
         {$and:[{_user: _user}, {mac_addr: data.mac_addr}]},
-        {$set: {fid: data.fid, title: data.title, data: {cnt: data.cnt}}},
+        {$set: {fid: data.fid, title: data.title, data: {cnt: DEFAULT_COUNT}}},
         function(err){
             if(err){
                 logger.error("btn funcReg error : ", err);
@@ -159,7 +161,7 @@ ButtonSchema.statics.checkReg = function(_user, data, callback){
     var self = this;
     self.update(
         {$and:[{_user: _user}, {mac_addr: data.mac_addr}]},
-        {$set: {fid: data.fid, title:data.title, data: {chk: data.chk}}},
+        {$set: {fid: data.fid, title:data.title, data: {chk: data.chk, chk_max: data.chk}}},
         function(err){
             if(err){
                 logger.error("btn funcReg error : ", err);
@@ -201,10 +203,10 @@ ButtonSchema.statics.msgReg = function(_user, data, callback){
 /*******************
  *  Btn Func Delete
  ********************/
-ButtonSchema.statics.funcDelete = function(_user, data, callback){
+ButtonSchema.statics.funcDelete = function(data, callback){
     var self = this;
     var DELETE = 0;
-    self.update({$and:[{_user: _user}, {mac_addr: data.mac_addr}]},
+    self.update({$and:[{_user: data._user}, {mac_addr: data.mac_addr}]},
         {$set: {fid: DELETE, title: null, data: {}}},
         function(err){
             if(err){
@@ -212,6 +214,41 @@ ButtonSchema.statics.funcDelete = function(_user, data, callback){
                 callback(err);
             }
             else callback(null);
+        });
+};
+
+/*******************
+ *  Count Reset
+ ********************/
+ButtonSchema.statics.countReset = function(data, done){
+    var self = this;
+    var RESET = 0;
+    self.update({$and:[{_user: data._user}, {mac_addr: data.mac_addr}]},
+        {$set: {"data.cnt": RESET}},
+        function(err){
+            if(err){
+                logger.error("Count Reset Error : ", err);
+                done(err);
+            }else{
+                done(null);
+            }
+        });
+};
+
+/*******************
+ *  Check Reset
+ ********************/
+ButtonSchema.statics.checkReset = function(data, chk_max, done){
+    var self = this;
+    self.update({$and:[{_user: data._user}, {mac_addr: data.mac_addr}]},
+        {$set: {"data.chk": chk_max}},
+        function(err){
+            if(err){
+                logger.error("Check Reset Error : ", err);
+                done(err);
+            }else{
+                done(null);
+            }
         });
 };
 
@@ -238,13 +275,13 @@ ButtonSchema.statics.click = function(mac_addr, done){
 };
 
 /*******************
- *  Counter Btn Click (arduino)
+ *  Count Btn Click (arduino)
  ********************/
-ButtonSchema.statics.counterClick = function(mac_addr, done){
+ButtonSchema.statics.countClick = function(mac_addr, done){
     var self = this;
     self.update({mac_addr: mac_addr}, {$inc: {"data.cnt": 1}}, function(err){
         if(err){
-            logger.error("Counter Click inc error:", err);
+            logger.error("Count Click inc error:", err);
             done(err);
         }else{
             done(null);
