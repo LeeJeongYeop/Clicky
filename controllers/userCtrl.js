@@ -10,7 +10,7 @@ var async = require('async');
  *  User Join
  ********************/
 exports.join = function(req, res){  //TODO MC 구분해야함.
-    if(!req.body.id || !req.body.password || !req.body.reg_id){  // parameter check
+    if(!req.body.id || !req.body.password){  // parameter check
         return res.json({
             "status": false,
             "message": "invalid parameter"
@@ -38,8 +38,7 @@ exports.join = function(req, res){  //TODO MC 구분해야함.
                 function(callback){
                     var user = new db_user({
                         "id": req.body.id,
-                        "password": req.body.password,
-                        "reg_id": req.body.reg_id
+                        "password": req.body.password
                     });
                     user.save(function(err, doc) {
                         if (err){
@@ -62,7 +61,7 @@ exports.join = function(req, res){  //TODO MC 구분해야함.
  ********************/
 exports.login = function(req, res){
     logger.info("req.body:", req.body);
-    if(!req.body.id || !req.body.password){  // parameter check
+    if(!req.body.id || !req.body.password || !req.body.reg_id){  // parameter check
         return res.json({
             "status": false,
             "message": "invalid parameter"
@@ -76,10 +75,17 @@ exports.login = function(req, res){
                 return res.json({"status": false, "message": "Not join"});
             }else{
                 if((req.body.id == user.id) && (db_crypto.do_ciper(req.body.password) == user.password)){
-                    req.session.user = user._id;  // session 저장
-                    return res.json({
-                        "status": true,
-                        "message": "success"
+                    var data = [user._id, req.body.reg_id];
+                    db_user.regUpdate(data, function(err){
+                        if(err){
+                            return res.json({"status": false, "message": "Login error"});
+                        }else{
+                            req.session.user = user._id;  // session 저장
+                            return res.json({
+                                "status": true,
+                                "message": "success"
+                            });
+                        }
                     });
                 }else{
                     return res.json({

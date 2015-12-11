@@ -13,7 +13,7 @@ var Schema = mongoose.Schema;
 var ButtonSchema = new Schema({
     mac_addr: {type: String, required: true},
     fid: {type: Number, default: 0},  // 1)타이머,2)알람,3)스톱워치,4)체커,5)타이머,6)메세지
-    title: {type: String},
+    title: {type: String, default: null},
     data: {
         cnt: Number,  //  1) 카운터
         start: String,  //  2) 알람

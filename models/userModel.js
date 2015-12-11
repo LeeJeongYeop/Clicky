@@ -13,7 +13,7 @@ var Schema = mongoose.Schema;
 var UserSchema = new Schema({
     id: {type: String, required: true},
     password: {type: String, required: true},
-    reg_id: {type: String, required: true},  // android regID
+    reg_id: {type: String, default: null},  // android regID
     create_at: {type: Date, default: Date.now}
 });
 UserSchema.index({ id: 1 }, { unique: true });
@@ -31,6 +31,18 @@ UserSchema.statics.login = function(id, callback){
     self.findOne({id: id}, function(err, user){
         if(err) callback(err);
         else callback(null, user);
+    });
+};
+UserSchema.statics.regUpdate = function(data, callback){
+    var self = this;
+    logger.info(data[0]);
+    self.update({_id: data[0]}, {$set: {reg_id: data[1]}}, function(err){
+        if(err) {
+            logger.error("Login reg_id Update Error:", err);
+            callback(err);
+        }else{
+            callback(null);
+        }
     });
 };
 
