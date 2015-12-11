@@ -24,3 +24,5 @@
 | Btn Click(arduino) |	POST	| /clicky/ardu/click | complete | 15-11-07 |
 | Btn Function View |	GET	| /clicky/btn/func/:mac_addr | complete | 15-12-05 |
 | Btn List |	GET	| /clicky/btn | complete | 15-12-08 |
+| Count Btn Reset  |	PUT	| /clicky/btn/func/count | complete | 15-12-12 |
+| Check Btn Reset  |	PUT	| /clicky/btn/func/check | complete | 15-12-12 |
