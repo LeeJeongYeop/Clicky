@@ -38,23 +38,38 @@ exports.click = function(req, res){
                                 callback(null, doc);
                             }
                         });
-                    }else if(doc.fid == 4){  //  check 버튼 감소 시키기
-                        if(doc.data.chk < 1){
+                    }else if(doc.fid == 4) {  // Check 버튼 감소 시키기
+                        if (doc.data.chk < 1) {
                             callback(null, doc);
-                        }else{
+                        } else {
                             var data = {
                                 "mac_addr": req.body.mac_addr,
                                 "chk": (doc.data.chk - 1)
                             };
-                            db_btn.checkClick(data, function(err){
-                                if(err){
+                            db_btn.checkClick(data, function (err) {
+                                if (err) {
                                     message = "Check Button Click Error";
                                     callback(err);
-                                }else{
+                                } else {
                                     callback(null, doc);
                                 }
                             });
                         }
+                    }else if(doc.fid == 5){  // Timer 버튼 상태 변환
+                        var STATUS_CHANGE = -1;
+                        var time_check = doc.data.time_check * STATUS_CHANGE;
+                        var data = {
+                            "mac_addr": req.body.mac_addr,
+                            "time_check": time_check
+                        };
+                        db_btn.timerClick(data, function(err){
+                            if(err){
+                                message = "Timer Click Error";
+                                callback(err);
+                            }else{
+                                callback(null, doc);
+                            }
+                        });
                     }else{
                         callback(null, doc);
                     }

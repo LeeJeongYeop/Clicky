@@ -43,7 +43,7 @@ exports.reg = function(req, res){
 };
 
 /*******************
- *  Button Delete
+ *  Button List
  ********************/
 exports.list = function(req, res){
     db_btn.list(req.session.user, function(err, doc){
@@ -218,7 +218,7 @@ exports.funcDelete = function(req, res) {
         var data = {
             "_user": req.session.user,
             "mac_addr": req.body.mac_addr
-        }
+        };
         async.waterfall([
                 function (callback) {
                     db_btn.btnFuncCheck(data, function (err, doc) {
@@ -262,13 +262,13 @@ exports.countReset = function(req, res){
                     db_btn.btnFuncCheck(data, function (err, doc) {
                         if (err){
                             callback(err, "Button Function Check Error");
-                        }else if (!doc){
-                            res.json({"status": false, "message": "No reg button"});  // 등록된 버튼이 없음
-                        }else if (doc.fid == 0 || doc.fid != 1){
+                        }else if (!doc){  // 등록된 버튼이 없음
+                            res.json({"status": false, "message": "No reg button"});
+                        }else if (doc.fid == 0 || doc.fid != 1){  // 기능이 없는 버튼이거나 Count 버튼이 아님
                             res.json({
                                 "status": false,
                                 "message": "Not match or No reg Function"
-                            }); // 기능이 없는 버튼이거나 Count 버튼이 아님
+                            });
                         }else{
                             callback(null);
                         }
@@ -317,13 +317,13 @@ exports.checkReset = function(req, res){
                     db_btn.btnFuncCheck(data, function (err, doc) {
                         if (err){
                             callback(err, "Button Function Check Error");
-                        }else if (!doc){
-                            res.json({"status": false, "message": "No reg button"});  // 등록된 버튼이 없음
-                        }else if (doc.fid == 0 || doc.fid != 4){
+                        }else if (!doc){  // 등록된 버튼이 없음
+                            res.json({"status": false, "message": "No reg button"});
+                        }else if (doc.fid == 0 || doc.fid != 4){  // 기능이 없는 버튼이거나 Check 버튼이 아님
                             res.json({
                                 "status": false,
                                 "message": "Not match or No reg Function"
-                            }); // 기능이 없는 버튼이거나 Check 버튼이 아님
+                            });
                         }else{
                             callback(null, doc.data.chk_max);
                         }
@@ -333,6 +333,117 @@ exports.checkReset = function(req, res){
                     db_btn.checkReset(data, chk_max, function(err){
                         if(err){
                             callback(err, "Counter Reset Error");
+                        }else{
+                            callback(null, "success");
+                        }
+                    });
+                }
+            ],
+            function(err, message){
+                var status = true;
+                if(err){
+                    status = false;
+                }
+                return res.json({
+                    "status": status,
+                    "message": message
+                });
+            }
+        );  // waterfall
+    }
+};
+
+/*******************
+ *  Timer Update
+ ********************/
+exports.timerUpdate = function(req, res){
+    if (!req.body.mac_addr || !req.body.time) {  // parameter check
+        return res.json({
+            "status": false,
+            "message": "invalid parameter"
+        });
+    } else {
+        var data = {
+            "_user": req.session.user,
+            "mac_addr": req.body.mac_addr,
+            "time": req.body.time
+        };
+        async.waterfall([
+                function(callback){
+                    db_btn.btnFuncCheck(data, function (err, doc) {
+                        if (err){
+                            callback(err, "Button Function Check Error");
+                        }else if (!doc){  // 등록된 버튼이 없음
+                            res.json({"status": false, "message": "No reg button"});
+                        }else if (doc.fid == 0 || doc.fid != 5){  // 기능이 없는 버튼이거나 Timer 버튼이 아님
+                            res.json({
+                                "status": false,
+                                "message": "Not match or No reg Function"
+                            });
+                        }else{
+                            callback(null);
+                        }
+                    });
+                },
+                function(callback){
+                    db_btn.timerUpdate(data, function(err){
+                        if(err){
+                            callback(err, "Timer Update Error");
+                        }else{
+                            callback(null, "success");
+                        }
+                    });
+                }
+            ],
+            function(err, message){
+                var status = true;
+                if(err){
+                    status = false;
+                }
+                return res.json({
+                    "status": status,
+                    "message": message
+                });
+            }
+        );  // waterfall
+    }
+};
+
+/*******************
+ *  Timer Reset
+ ********************/
+exports.timerReset = function(req, res){
+    if (!req.body.mac_addr) {  // parameter check
+        return res.json({
+            "status": false,
+            "message": "invalid parameter"
+        });
+    } else {
+        var data = {
+            "_user": req.session.user,
+            "mac_addr": req.body.mac_addr
+        };
+        async.waterfall([
+                function(callback){
+                    db_btn.btnFuncCheck(data, function (err, doc) {
+                        if (err){
+                            callback(err, "Button Function Check Error");
+                        }else if (!doc){  // 등록된 버튼이 없음
+                            res.json({"status": false, "message": "No reg button"});
+                        }else if (doc.fid == 0 || doc.fid != 5){  // 기능이 없는 버튼이거나 Timer 버튼이 아님
+                            res.json({
+                                "status": false,
+                                "message": "Not match or No reg Function"
+                            });
+                        }else{
+                            callback(null, doc.data.time_max);
+                        }
+                    });
+                },
+                function(time_max, callback){
+                    db_btn.timerReset(data, time_max, function(err){
+                        if(err){
+                            callback(err, "Timer Reset Error");
                         }else{
                             callback(null, "success");
                         }

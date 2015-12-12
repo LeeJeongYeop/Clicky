@@ -24,9 +24,12 @@ exports.initApp = function(app){
     app.route('/clicky/btn/func/:mac_addr')
         .get(userCtrl.loginRequired, btnCtrl.funcView);
     app.route('/clicky/btn/func/count')
-        .put(userCtrl.loginRequired, btnCtrl.countReset);
+        .post(userCtrl.loginRequired, btnCtrl.countReset);
     app.route('/clicky/btn/func/check')
-        .put(userCtrl.loginRequired, btnCtrl.checkReset);
+        .post(userCtrl.loginRequired, btnCtrl.checkReset);
+    app.route('/clicky/btn/func/timer')
+        .put(userCtrl.loginRequired, btnCtrl.timerUpdate)
+        .post(userCtrl.loginRequired, btnCtrl.timerReset);
 
     // ARDUINO
     app.route('/clicky/ardu/click')

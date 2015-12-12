@@ -15,13 +15,15 @@ var ButtonSchema = new Schema({
     fid: {type: Number, default: 0},  // 1)타이머,2)알람,3)스톱워치,4)체커,5)타이머,6)메세지
     title: {type: String, default: null},
     data: {
-        cnt: Number,  //  1) 카운터
-        start: String,  //  2) 알람
-        end: String,  //  2) 알람
-        chk_max: Number, // 4) 체크
-        chk: Number,  // 4) 체크
-        time: String,  // 5) 타이머
-        content: String  // 6) 메세지
+        cnt: Number,        // 1) 카운터
+        start: String,      // 2) 알람
+        end: String,        // 2) 알람
+        chk_max: Number,    // 4) 체크
+        chk: Number,        // 4) 체크
+        time: String,       // 5) 타이머
+        time_check: Number, // 5) 타이머(-1:정지상태, 1:시작상태)
+        time_max: String,   // 5) 타이머
+        content: String     // 6) 메세지
     },
     _user: {type: String, ref: "User"},
     create_at: {type: Date, default: Date.now}
@@ -173,9 +175,11 @@ ButtonSchema.statics.checkReg = function(_user, data, callback){
 };
 ButtonSchema.statics.timerReg = function(_user, data, callback){
     var self = this;
+    var DEFAULT = -1;
     self.update(
         {$and:[{_user: _user}, {mac_addr: data.mac_addr}]},
-        {$set: {fid: data.fid, title:data.title, data: {time: data.time}}},
+        {$set: {fid: data.fid, title:data.title,
+            data: {time: data.time, time_max: data.time, time_check: DEFAULT}}},
         function(err){
             if(err){
                 logger.error("btn funcReg error : ", err);
@@ -253,6 +257,41 @@ ButtonSchema.statics.checkReset = function(data, chk_max, done){
 };
 
 /*******************
+ *  Timer Update
+ ********************/
+ButtonSchema.statics.timerUpdate = function(data, done){
+    var self = this;
+    self.update({$and:[{_user: data._user}, {mac_addr: data.mac_addr}]},
+        {$set: {"data.time": data.time}},
+        function(err){
+            if(err){
+                logger.error("Timer Update Error : ", err);
+                done(err);
+            }else{
+                done(null);
+            }
+        });
+};
+
+/*******************
+ *  Timer Reset
+ ********************/
+ButtonSchema.statics.timerReset = function(data, time_max, done){
+    var self = this;
+    var DEFAULT = -1;
+    self.update({$and:[{_user: data._user}, {mac_addr: data.mac_addr}]},
+        {$set: {"data.time": time_max, "data.time_check": DEFAULT}},
+        function(err){
+            if(err){
+                logger.error("Timer Reset Error : ", err);
+                done(err);
+            }else{
+                done(null);
+            }
+        });
+};
+
+/*******************
  *  Btn Click (arduino)
  ********************/
 ButtonSchema.statics.click = function(mac_addr, done){
@@ -297,6 +336,21 @@ ButtonSchema.statics.checkClick = function(data, done){
     self.update({mac_addr: data.mac_addr}, {$set: {"data.chk": data.chk}}, function(err){
         if(err){
             logger.error("Check Click inc error:", err);
+            done(err);
+        }else{
+            done(null);
+        }
+    });
+};
+
+/*******************
+ *  Timer Btn Click (arduino)
+ ********************/
+ButtonSchema.statics.timerClick = function(data, done){
+    var self = this;
+    self.update({mac_addr: data.mac_addr}, {$set: {"data.time_check": data.time_check}}, function(err){
+        if(err){
+            logger.error("Timer Click error:", err);
             done(err);
         }else{
             done(null);

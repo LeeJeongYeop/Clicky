@@ -4,8 +4,28 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var my = require('./my_conf');
+var redis = require('redis'); //redis
+var RedisStore = require('connect-redis')(session);  // connect-redis
+
+// redis setting
+var client = redis.createClient();
+client.select(my.redisSelect());
 
 var app = express();
+
+// redis session setting
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUnitinialized: true,
+    store: new RedisStore({
+        host: my.redisAddr(),
+        port: my.redisPort(),
+        ttl: 60*60,
+        client: client
+    })
+}));
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -15,16 +35,6 @@ app.use(cookieParser());
 // TEST routes
 var routes = require('./routes/index');
 app.use('/', routes);
-
-// express-session
-app.use(session({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        secure: false
-    }
-}));
 
 // initialize routes
 require('./routes/api').initApp(app);
